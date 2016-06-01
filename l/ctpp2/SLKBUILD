@@ -1,0 +1,31 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=ctpp2
+pkgver=2.8.3
+pkgrel=1go
+source=("http://ctpp.havoc.ru/download/$pkgname-$pkgver.tar.gz" "CTPP2FileSourceLoader.patch")
+docs=("INSTALL" "CHANGES" "NOTTODO" "CHANGES" "TODO")
+url="http://ctpp.havoc.ru/en/"
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+ "cttp2 (tool separating data processing)"
+ "Shortly, CTPP or CT Plus Plus is a tool separating data processing"
+ "(business logic) from data presentation. CTPP is a suitable choice"
+ "for projects where a programmer and an HTML designer are different"
+ "people."
+ ""
+ "Homepage: http://ctpp.havoc.ru/en/"
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	patch -p0 -i $startdir/src/CTPP2FileSourceLoader.patch
+	[ -d build ] || mkdir build
+	cd build
+	cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+	make VERBOSE=1 -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+}
