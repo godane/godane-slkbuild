@@ -1,0 +1,36 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=zimlib
+pkgver=1.2
+pkgrel=1go
+source=("http://www.openzim.org/download/$pkgname-$pkgver.tar.gz")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://www.openzim.org/wiki/OpenZIM"
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+ "zimlib (The standard implementation of the ZIM specification)"
+ "The zimlib is the standard implementation of the ZIM specification."
+ "It is a library which implements the read and write method for ZIM"
+ "files. The zimlib is released under the GPLv2 license terms. Use the"
+ "zimlib in your own software - like reader applications - to make them"
+ "ZIM-capable without the need having to dig too much into the ZIM file"
+ "format."
+ ""
+ "Homepage: http://www.openzim.org/wiki/OpenZIM"
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	./configure --prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+}
