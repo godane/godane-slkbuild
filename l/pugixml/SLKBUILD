@@ -1,0 +1,37 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=pugixml
+pkgver=1.7
+pkgrel=1go
+source=("http://github.com/zeux/pugixml/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+docs=("readme.txt")
+url="http://pugixml.org/"
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+ "pugixml (XML parser for C)"
+ ""
+ "pugixml is a C++ XML processing library, which consists of a DOM-like"
+ "interface with rich traversal/modification capabilities, an extremely"
+ "fast XML parser which constructs the DOM tree from an XML file/buffer"
+ "and an XPath 1.0 implementation for complex data-driven tree queries."
+ "Full Unicode support is also available, with Unicode interface"
+ "variants and conversions between different Unicode encodings."
+ ""
+ "Homepage: http://pugixml.org/"
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver/scripts
+	cmake \
+		-DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+		-DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DBUILD_SHARED_LIBS=ON \
+		-DCMAKE_BUILD_TYPE=Release .
+	make
+	make install DESTDIR=$startdir/pkg
+}
