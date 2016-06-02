@@ -1,0 +1,42 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=snes9x
+pkgver=1.53
+pkgrel=1go
+source=("http://urchlay.naptime.net/~urchlay/src/snes9x-1.53-src.tar.bz2" 
+		"snes9x-gtk.6")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="https://github.com/snes9xgit/snes9x"
+
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+ "snes9x (Super Nintendo Entertainment System emulator)"
+ "Snes9x is a portable, freeware Super Nintendo Entertainment System"
+ "(SNES) emulator. It basically allows you to play most games designed"
+ "for the SNES and Super Famicom Nintendo game systems on your PC or"
+ "Workstation. The games include some real gems that were only ever"
+ "released in Japan."
+)
+
+build() {
+	cd $startdir/src/${pkgname}-${pkgver}-src/gtk
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--bindir=/usr/games \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--with-netplay \
+		--build=$ARCH-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+	mkdir -p $startdir/pkg/usr/man/man6
+	gzip -9c $startdir/src/snes9x-gtk.6 > $startdir/pkg/usr/man/man6/snes9x-gtk.6.gz
+	ln -s $pkgname-gtk $startdir/pkg/usr/games/$pkgname
+}
