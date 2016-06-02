@@ -1,0 +1,50 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=zsnes
+pkgver=1.5.1
+pkgrel=1go
+source=("http://downloads.sourceforge.net/project/zsnes/zsnes/ZSNES%20v1.51/zsnes151src.tar.bz2" 
+		"zsnes-1.51-libpng15.patch" 
+		"zsnes.patch"
+		"zsnes.png"
+		"zsnes.desktop")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://www.zsnes.com/"
+
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+ "zsnes (SNES games emulator)"
+ "ZSNES is a Super Nintendo emulator programmed by zsKnight and _Demo_."
+ "On April 2, 2001 the ZSNES project was GPL'ed and its source released"
+ "to the public. It currently runs on Windows, Linux, FreeBSD, and DOS."
+ "Remember that this is a public beta so don't expect this to run on"
+ "your machine."
+ ""
+ "Homepage: http://www.zsnes.com/"
+)
+
+build() {
+	cd $startdir/src/${pkgname}_1_51
+	patch -p1 -i $startdir/src/zsnes.patch
+	patch -p0 -i $startdir/src/zsnes-1.51-libpng15.patch
+	cd $startdir/src/${pkgname}_1_51/src
+	./configure \
+		--prefix=/usr \
+		--enable-release \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+	# Add a .desktop file and icon for good menu integration
+	mkdir -p $startdir/pkg/usr/share/{applications,pixmaps}
+	install -m 0644 $startdir/src/zsnes.desktop $PKG/usr/share/applications/zsnes.desktop
+	install -m 0644 $startdir/src/zsnes.png $PKG/usr/share/pixmaps/zsnes.png
+}
