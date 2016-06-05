@@ -1,0 +1,33 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=dos2unix
+pkgver=7.3.2
+pkgrel=1go
+source=("http://waterlan.home.xs4all.nl/dos2unix/$pkgname-$pkgver.tar.gz")
+docs=("INSTALL" "CHANGES" "NOTTODO" "CHANGES" "TODO")
+url="http://waterlan.home.xs4all.nl/dos2unix.html"
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+ "dos2unix (DOS or Mac to Unix and v.v. text files conversion)"
+ ""
+ "This is an update of Benjamin Lin's implementations of dos2unix and"
+ "unix2dos. These implementations of dos2unix and unix2dos have been"
+ "modelled after dos2unix/unix2dos under SunOS/Solaris. They have"
+ "similar conversion modes, namely ascii, 7bit and iso."
+ ""
+ "Homepage: http://www.xs4all.nl/~waterlan/dos2unix.html"
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	make
+	make \
+		prefix=$startdir/pkg/usr \
+		docdir=$startdir/pkg/usr/doc/$pkgname-$pkgver \
+		mandir=$startdir/pkg/usr/man \
+		install
+}
