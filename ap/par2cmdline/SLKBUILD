@@ -1,0 +1,37 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=par2cmdline
+pkgver=0.6.13
+pkgrel=1go
+source=("https://github.com/Parchive/par2cmdline/archive/v$pkgver.tar.gz")
+docs=("INSTALL" "AUTHORS" "ChangeLog" "NEWS" "PORTING" "ROADMAP" "README")
+url="https://github.com/Parchive/par2cmdline"
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+ "par2cmdline (Commandline implementation of PARv2.0 specification)"
+ ""
+ "par2cmdline is a GPL-licensed commandline tool for creating and"
+ "using PAR2 parity sets to detect damage in files and repair them"
+ "if necessary. The program uses Reed Solomon Coding to perform its"
+ "error correction. A useful program for checking and ensuring the"
+ "integrity of binaries retrieved from usenet for instance."
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	aclocal
+	automake --add-missing
+	autoconf
+	./configure --prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make check || return 1
+	make install DESTDIR=$startdir/pkg
+}
