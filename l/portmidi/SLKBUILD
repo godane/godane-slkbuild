@@ -1,0 +1,52 @@
+#Packager: George Vlahavas <vlahavas~at~gmail~dot~com>
+#
+# cmake and jdk are built time dependencies
+
+pkgname=portmidi
+pkgver=217
+pkgrel=1gv
+source=("http://downloads.sourceforge.net/project/portmedia/portmidi/217/portmidi-src-217.zip" "portmidi-cmake.patch")
+docs=("readme.txt" "install" "copying" "changelog.txt" "authors" "news" "todo" "license.txt")
+url=http://portmedia.sourceforge.net/portmidi
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"portmidi (Platform Independent Library for MIDI I/O)"
+"PortMidi is a library for software developers. It supports real-time"
+"input and output of MIDI data using a system-independent interface."
+"PortMidi is part of the PortMusic project."
+)
+
+
+build() {
+	cd $startdir/src/$pkgname
+
+	patch -p1 < $startdir/src/portmidi-cmake.patch || exit 1
+
+	cmake . \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DLIB_SUFFIX="$LIBDIRSUFFIX" \
+		-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$startdir/pkg/usr/bin \
+		-DJAVA_AWT_INCLUDE_PATH="/usr/lib$LIBDIRSUFFIX/java/include" \
+		-DJAVA_INCLUDE_PATH="/usr/lib$LIBDIRSUFFIX/java/include" \
+		-DJAVA_INCLUDE_PATH2="/usr/lib$LIBDIRSUFFIX/java/include/linux" \
+		-DCMAKE_CACHEFILE_DIR=$(pwd) \
+		-DJAVA_JVM_LIBRARY="/usr/lib$LIBDIRSUFFIX/libjvm.so"
+	sed -i "s|pm_java/pm_java|pm_java|" pm_java/CMakeFiles/pmdefaults_target.dir/build.make
+
+	make all PMFLAGS="-DNEWBUFFER"
+	make install DESTDIR=$startdir/pkg
+
+	install -m 0644 -D $startdir/src/$pkgname/pm_common/pmutil.h $startdir/pkg/usr/include
+
+	rm $startdir/pkg/usr/lib$LIBDIRSUFFIX/libportmidi_s.a
+	mv $startdir/pkg/usr/bin/test $startdir/pkg/usr/bin/portmiditest
+
+	(
+	cd $startdir/pkg/usr/lib${LIBDIRSUFFIX}
+	ln -s libportmidi.so libporttime.so
+	)
+} 
