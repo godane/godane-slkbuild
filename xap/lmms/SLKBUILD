@@ -1,0 +1,30 @@
+#Maintainer: George Vlahavas <vlahavas~at~gmail~dot~com>
+
+pkgname=lmms
+pkgver=1.1.3
+pkgrel=1go
+source=("https://codeload.github.com/LMMS/lmms/tar.gz/v1.1.3" "make-werrror-optional.patch")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url=https://lmms.io/
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"lmms (Linux MultiMedia Studio)"
+""
+"Linux Multi-Media Studio: multi-track rythm, midi, beat, editor (DAW)"
+""
+"Homepage: https://lmms.io/"
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	sed -i 's|lib64|lib|g' cmake/modules/DetectMachine.cmake
+	patch -Np1 -i $startdir/src/make-werrror-optional.patch
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX}
+	make VERBOSE=1
+	make install DESTDIR=$startdir/pkg
+}
