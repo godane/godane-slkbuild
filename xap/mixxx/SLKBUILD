@@ -1,0 +1,39 @@
+#Maintainer: George Vlahavas <vlahavas~at~gmail~dot~com>
+
+pkgname=mixxx
+pkgver=1.11.0
+pkgrel=1go
+source=("http://downloads.mixxx.org/$pkgname-$pkgver/$pkgname-$pkgver-src.tar.gz" "desktop.diff")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url=http://www.mixxx.org
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"Mixxx (open source DJ software for performing live mixes)"
+""
+"Mixxx is been created for DJs, by DJs. It has numerous features"
+"including parallel waveform summaries and displays, MP3, OGG, WAVE"
+"and FLAC playback, pitch independent time stretch, vinyl emulation,"
+"wave recording, BPM detection, multichannel and multiple soundcard"
+"support, MIDI controllers support and scripting engine, a skinnable"
+"interface"
+""
+"Homepage: http://www.mixxx.org"
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	patch -p0 < $startdir/src/desktop.diff
+	QTDIR=/usr/lib$LIBDIRSUFFIX/qt \
+	scons \
+		shoutcast=0 \
+		prefix=/usr
+
+	QTDIR=/usr/lib$LIBDIRSUFFIX/qt \
+	scons \
+		install_root=$startdir/pkg/usr \
+		prefix=/usr \
+		install
+}
