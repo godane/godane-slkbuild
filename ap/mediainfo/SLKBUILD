@@ -1,0 +1,42 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=mediainfo
+pkgver=0.7.72
+pkgrel=1go
+source=("http://sourceforge.net/projects/mediainfo/files/source/${pkgname}/${pkgver}/${pkgname}_${pkgver}.tar.bz2")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="http://mediainfo.sourceforge.net/"
+#depends on libzen, libmediainfo
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"mediainfo (supplies information about a video or audio file)"
+""
+"MediaInfo supplies technical and tag information about a video or"
+"audio file."
+""
+"Homepage: http://mediainfo.sourceforge.net/"
+
+)
+
+
+build() {
+	cd $startdir/src/MediaInfo
+	# We do not want builtin libzen
+	if [ -d $startdir/src/MediaInfo/MediainfoLib ]; then
+		rm -rf $startdir/src/MediaInfo/MediaInfoLib
+	fi
+	cd Project/GNU/CLI
+	./autogen
+	./configure --prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--disable-static \
+		--enable-shared \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+}
