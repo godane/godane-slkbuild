@@ -3,7 +3,7 @@
 pkgname=libzen
 pkgver=0.4.30
 pkgrel=1go
-source=("http://downloads.sourceforge.net/zenlib//${pkgname}_${pkgver}.tar.bz2")
+source=("http://downloads.sourceforge.net/zenlib/${pkgname}_${pkgver}.tar.bz2")
 docs=("INSTALL" "CHANGES" "NOTTODO" "CHANGES" "TODO")
 url="http://mediainfo.sourceforge.net/"
 
@@ -13,7 +13,7 @@ slackdesc=\
 "libzen (mandatory library for libmediainfo)"
 ""
 "This package includes the shared library and the development support"
-libzen: files.
+"files."
 ""
 "Homepage: http://mediainfo.sourceforge.net/"
 
