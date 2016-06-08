@@ -1,0 +1,37 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=libzen
+pkgver=0.4.30
+pkgrel=1go
+source=("http://downloads.sourceforge.net/zenlib//${pkgname}_${pkgver}.tar.bz2")
+docs=("INSTALL" "CHANGES" "NOTTODO" "CHANGES" "TODO")
+url="http://mediainfo.sourceforge.net/"
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"libzen (mandatory library for libmediainfo)"
+""
+"This package includes the shared library and the development support"
+libzen: files.
+""
+"Homepage: http://mediainfo.sourceforge.net/"
+
+)
+
+
+build() {
+	cd $startdir/src/ZenLib/Project/GNU/Library
+	./autogen
+	./configure --prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+
+	# Correct version number in .pc file
+	sed -i "s/^Version: .*$/Version: $pkgver/" $startdir/pkg/usr/lib${LIBDIRSUFFIX}/pkgconfig/libzen.pc
+
+}
