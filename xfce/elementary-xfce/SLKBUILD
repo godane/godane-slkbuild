@@ -3,6 +3,7 @@
 pkgname=elementary-xfce
 pkgver=0.7
 pkgrel=1go
+arch=noarch
 source=("https://github.com/shimmerproject/$pkgname/archive/$pkgver.tar.gz" "slackware-branding.tar.gz")
 docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
 url="https://github.com/shimmerproject/elementary-xfce"

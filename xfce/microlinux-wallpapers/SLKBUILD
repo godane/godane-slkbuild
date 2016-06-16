@@ -1,0 +1,27 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=microlinux-wallpapers
+pkgver=1.0
+pkgrel=1go
+arch=noarch
+source=("http://www.microlinux.fr/download/backdrops.tar.gz")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="http://www.microlinux.fr/"
+
+
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"microlinux-wallpapers (custom wallpapers)"
+""
+"This package contains a collection of wallpapers for the Microlinux "
+"Enterprise Desktop (MLED)."
+)
+
+
+build() {
+	cd $startdir/src
+	mkdir -p $startdir/pkg/usr/share/backgrounds/xfce
+	cp -a backdrops/* $startdir/pkg/usr/share/backgrounds/xfce/
+}
