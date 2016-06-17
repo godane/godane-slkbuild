@@ -1,0 +1,26 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=openshot
+pkgver=1.4.3
+pkgrel=1go
+source=("http://launchpad.net/$pkgname/1.4/$pkgver/+download/$pkgname-$pkgver.tar.gz")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="http://www.openshot.org/"
+# depends on goocanvas, pygoocanvas, pyxdg, and mlt
+
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"openshot (an open-source video editor)"
+"" 
+"OpenShot Video Editor(TM) is an open-source program that creates,"
+"modifies and edits video files."
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	python setup.py install --root=$startdir/pkg
+}
