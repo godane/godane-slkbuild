@@ -1,0 +1,50 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=mlt
+pkgver=6.2.0
+pkgrel=1go
+source=("https://github.com/mltframework/$pkgname/archive/v$pkgver.tar.gz")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="http://www.mltframework.org/"
+
+
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"mlt (Open source multimedia framework)"
+""
+"MLT is an open source multimedia framework, designed and developed"
+"for television broadcasting. It provides a toolkit for broadcasters,"
+"video editors, media players, transcoders, web streamers and many"
+"more types of applications. The functionality of the system is"
+"provided via an assortment of ready to use tools, XML authoring"
+"components, and an extensible plug-in based API."
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+
+	./configure \
+		--disable-debug \
+		--prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--qimage-libdir=${QT4DIR}/qt/lib \
+		--qimage-includedir=${QT4DIR}/qt/include \
+		--enable-gpl \
+		--luma-compress \
+		--enable-motion-est \
+		--swig-languages="python"
+		--build=$arch-slackware-linux
+
+	make clean
+	make
+	make install DESTDIR=$startdir/pkg
+	cd $startdir/src/$pkgname-$pkgver/src/swig/python
+	mkdir -p $startdir/pkg/usr/lib/python2.7/
+	install -m755 mlt.py $startdir/pkg/usr/lib/python2.7/
+	install -m755 _mlt.so $startdir/pkg/usr/lib/python2.7/
+	install -m755 mlt_wrap.o $startdir/pkg/usr/lib/python2.7/
+}
