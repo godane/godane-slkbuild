@@ -1,0 +1,42 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=openmsx
+pkgver=0.11.0
+pkgrel=1go
+source=("http://downloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.gz" 
+		"openmsx.desktop")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://openmsx.sourceforge.net/"
+
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"openMSX (MSX Emulator)"
+""
+"openMSX is an emulator for the MSX home computer system."
+"Its goal is to emulate all aspects of the MSX with 100% accuracy:"
+"perfection in emulation."
+""
+"Homepage: http://openmsx.sourceforge.net"
+)
+
+build() {
+	cd $startdir/src/${pkgname}-${pkgver}
+	sed -i 's@SYMLINK_FOR_BINARY:=true@SYMLINK_FOR_BINARY:=false@' build/custom.mk
+	sed -i 's@INSTALL_BASE:=/opt/openMSX@INSTALL_BASE:=/usr/share/openmsx@' build/custom.mk
+	echo "INSTALL_DOC_DIR:=/usr/doc/openmsx-$pkgver" >> build/custom.mk
+	echo "INSTALL_SHARE_DIR:=/usr/share/openmsx" >> build/custom.mk
+	echo "INSTALL_BINARY_DIR:=/usr/bin" >> build/custom.mk
+	./configure 
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+	mkdir -p $startdir/pkg/usr/share/applications
+	cp $startdir/src/openmsx.desktop  $startdir/pkg/usr/share/applications/openmsx.desktop
+	install -m 0644 -D $startdir/pkg/usr/share/openmsx/icons/openMSX-logo-48.png \
+		$startdir/pkg/usr/share/pixmaps/openmsx.png
+}
