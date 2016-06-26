@@ -1,0 +1,66 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=openttd
+pkgver=1.5.3
+pkgrel=1go
+source=("http://binaries.openttd.org/releases/$pkgver/$pkgname-$pkgver-source.tar.xz"
+		"http://binaries.openttd.org/extra/opengfx/0.5.2/opengfx-0.5.2-all.zip"
+        "http://binaries.openttd.org/extra/openmsx/0.3.1/openmsx-0.3.1-all.zip"
+        "http://binaries.openttd.org/extra/opensfx/0.2.3/opensfx-0.2.3-all.zip")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://www.openttd.org"
+options=('noextract')
+
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"OpenTTD (open-source clone of Transport Tycoon Deluxe)"
+""
+"OpenTTD is a clone of the Microprose game "Transport Tycoon"
+"Deluxe," a popular game originally written by Chris Sawyer."
+"Significant enhancements from the original game include"
+"bigger maps, new AI, stable multiplayer mode, dedicated"
+"server mode, and many in-game updates."
+""
+"Homepage: http://www.openttd.org"
+)
+
+build() {
+	cd $startdir/src
+	tar -xvf $pkgname-$pkgver-source.tar.xz
+	OPENGFX=0.5.2
+	OPENSFX=0.2.3
+	OPENMSX=0.3.1
+	unzip opengfx-$OPENGFX-all.zip
+	tar -xvf opengfx-$OPENGFX.tar
+	unzip opensfx-$OPENSFX-all.zip
+	unzip openmsx-$OPENMSX-all.zip
+	cd $startdir/src/${pkgname}-${pkgver}
+	./configure \
+		--prefix-dir=/usr \
+		--binary-dir=/games \
+		--data-dir=/share/games/openttd \
+		--icon-dir=/share/pixmaps \
+		--man-dir=/man/man6 \
+		--doc-dir=/doc/$pkgname-$pkgver \
+		--personal-dir=.openttd \
+		--install-dir=$startdir/pkg
+	make
+	make install DEST_DIR=$startdir/pkg
+	# First rename some text files to avoid name collisions when copied
+	rename .txt _opengfx.txt $stardir/src/opengfx-$OPENGFX/*
+	rename .txt _opensfx.txt $startdir/src/opensfx-$OPENSFX/*
+	rename .txt _openmsx.txt $startdir/src/openmsx-$OPENMSX/*
+	# Now copy the data files
+	mkdir $startdir/pkg/usr/share/games/openttd/data/
+	mkdir $startdir/pkg/usr/share/games/openttd/gm/
+	cp -a $startdir/src/opengfx-$OPENGFX/* $startdir/pkg/usr/share/games/openttd/data/
+	cp -a $startdir/src/opensfx-$OPENSFX/* $startdir/pkg/usr/share/games/openttd/data/
+	cp -a $startdir/src/openmsx-$OPENMSX/* $startdir/pkg/usr/share/games/openttd/gm/
+	
+}
