@@ -1,0 +1,53 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=hostapd
+pkgver=2.5
+pkgrel=1go
+source=("http://w1.fi/releases/$pkgname-$pkgver.tar.gz"
+		"hostapd.defconfig"
+		"rc.hostapd"
+		"doinst.sh")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://w1.fi/hostapd/"
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"hostapd (wifi authenticator)"
+""
+"hostapd is a user space daemon for access point and authentication"
+"servers. It implements IEEE 802.11 access point management,"
+"IEEE 802.1X/WPA/WPA2/EAP Authenticators, RADIUS client, EAP server,"
+"and RADIUS authentication server. The current version supports Linux"
+"(Host AP, madwifi, Prism54 drivers) and FreeBSD (net80211)."
+""
+"Homepage: http://w1.fi/hostapd/"
+)
+
+build() {
+	cd $startdir/src/${pkgname}-${pkgver}/$pkgname
+	cat $startdir/src/hostapd.defconfig > .config
+	make
+	install -D -m 0755 $startdir/src/rc.hostapd $startdir/pkg/etc/rc.d/rc.hostapd.new
+
+	mkdir -p \
+		$startdir/pkg/usr/sbin/ \
+		$startdir/pkg/etc/hostapd \
+		$startdir/pkg/usr/man/man1 \
+		$startdir/pkg/usr/man/man8/
+	DOINST_TMP=$(mktemp)	# temporary holding place
+	for i in \
+		hostapd.??* *.conf
+	do
+		cat $i > $startdir/pkg/etc/hostapd/$i.new ;
+		chmod 0600 $startdir/pkg/etc/hostapd/$i.new ;
+		echo "config etc/hostapd/$i.new" >> $DOINST_TMP
+	done
+
+	gzip -9c hostapd.8 > $startdir/pkg/usr/man/man8/hostapd.8.gz
+	gzip -9c hostapd_cli.1 > $startdir/pkg/usr/man/man1/hostapd_cli.1.gz
+	cp hostapd hostapd_cli $startdir/pkg/usr/sbin/
+	mkdir -p $startdir/pkg/install
+	cat $startdir/src/doinst.sh $DOINST_TMP > $startdir/pkg/install/doinst.sh
+}
