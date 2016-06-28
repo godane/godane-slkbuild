@@ -1,0 +1,29 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=jpegoptim
+pkgver=1.4.3
+pkgrel=1go
+source=("https://github.com/tjko/$pkgname/archive/RELEASE.$pkgver.tar.gz")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="https://github.com/tjko/jpegoptim"
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"jpegoptim (optimize/compress JPEGs)"
+""
+"jpegoptim is a JPEG optimizer/compressor"
+""
+"Homepage: https://github.com/tjko/jpegoptim"
+)
+
+build() {
+	cd $startdir/src/$pkgname-RELEASE.$pkgver
+	./configure \
+		--prefix=/usr \
+		--build=$arch-slackware-linux
+	make
+	make strip
+	make install DESTDIR=$startdir/pkg
+}
