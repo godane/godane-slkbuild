@@ -1,0 +1,35 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=wine
+pkgver=1.8
+pkgrel=1go
+source=("http://prdownloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.bz2")
+docs=("INSTALL" "CHANGES" "NOTTODO" "CHANGES" "TODO")
+url="http://www.winehq.com/"
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"wine (Wine Is Not an Emulator)"
+""
+"Wine is an Open Source implementation of the Windows API"
+"on top of X and Unix."
+""
+"Homepage: http://www.winehq.com/"
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	./configure \
+		--prefix=/usr \
+		--mandir=/usr/man \
+		--docdir=/usr/doc/$pkgname-$pkgver \
+		--with-gnutls=yes \
+		--with-opengl \
+		--build=$arch-slackware-linux
+	make depend
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+}
