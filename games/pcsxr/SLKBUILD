@@ -1,0 +1,37 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=pcsxr
+pkgver=1.9.93
+pkgrel=1go
+source=("https://sources.archlinux.org/other/community/$pkgname/$pkgname-$pkgver.tar.bz2")
+docs=("INSTALL" "CHANGES" "NOTTODO" "CHANGES" "TODO")
+url="http://pcsxr.codeplex.com/"
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"pcsxr (playstation emulator)"
+""
+"PCSX-Reloaded is a PlayStation Emulator based on PCSX-df Project, with"
+"support for both Windows and GNU/Linux as well as many bugfixes and"
+"improvements."
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname
+	./autogen.sh 
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--mandir=/usr/man \
+		--enable-sound=alsa \
+		--enable-opengl \
+		--enable-libcdio \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+}
