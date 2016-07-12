@@ -1,0 +1,37 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=pil
+pkgver=1.1.7
+pkgrel=1go
+source=("http://effbot.org/downloads/Imaging-$pkgver.tar.gz")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="http://www.pythonware.com/products/pil/"
+
+
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"pil (Python Imaging Library)"
+""
+"The Python Imaging Library (PIL) adds image processing capabilities"
+"to your Python environment.  This library provides extensive file"
+"format support, an efficient internal representation, and powerful"
+"image processing capabilities."
+""
+"PIL is used by the scanning component of HPLIP."
+""
+"Homepage:  http://www.pythonware.com/products/pil/"
+
+)
+
+
+build() {
+	cd $startdir/src/Imaging-$pkgver
+
+	python setup.py build_ext -i || exit 1
+	python setup.py install --root=$startdir/pkg || exit 1
+	cd Sane
+	python setup.py build || exit 1
+	python setup.py install --root=$startdir/pkg || exit 1
+}
