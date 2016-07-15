@@ -1,0 +1,28 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=atomicparsley
+pkgver=0.9.0
+pkgrel=1go
+source=("http://downloads.sourceforge.net/$pkgname/AtomicParsley-source-$pkgver.zip"
+	"atomicparsley.diff")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://atomicparsley.sourceforge.net/"
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"atomicparsley (Adding metadata in MP4 files)"
+""
+"A command line program for reading, parsing and setting iTunes-style"
+"metadata in MPEG4 files"
+""
+"Homepage: http://atomicparsley.sourceforge.net/"
+)
+
+build() {
+	cd $startdir/src/AtomicParsley-source-${pkgver}
+	patch -p0 -i $startdir/src/atomicparsley.diff
+	./build
+	install -D -m755 AtomicParsley "$startdir/pkg/usr/bin/AtomicParsley"
+}
