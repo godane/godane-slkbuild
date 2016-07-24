@@ -29,25 +29,24 @@ build() {
 	cd $startdir/src/${pkgname}-${pkgver}/$pkgname
 	cat $startdir/src/hostapd.defconfig > .config
 	make
-	install -D -m 0755 $startdir/src/rc.hostapd $startdir/pkg/etc/rc.d/rc.hostapd.new
+
 
 	mkdir -p \
 		$startdir/pkg/usr/sbin/ \
 		$startdir/pkg/etc/hostapd \
 		$startdir/pkg/usr/man/man1 \
-		$startdir/pkg/usr/man/man8/
-	DOINST_TMP=$(mktemp)	# temporary holding place
+		$startdir/pkg/usr/man/man8
+
+	install -D -m 0755 $startdir/src/rc.hostapd $startdir/pkg/etc/rc.d/rc.hostapd
+
 	for i in \
 		hostapd.??* *.conf
 	do
-		cat $i > $startdir/pkg/etc/hostapd/$i.new ;
-		chmod 0600 $startdir/pkg/etc/hostapd/$i.new ;
-		echo "config etc/hostapd/$i.new" >> $DOINST_TMP
+		cat $i > $startdir/pkg/etc/hostapd/$i ;
+		chmod 0600 $startdir/pkg/etc/hostapd/$i ;
 	done
 
 	gzip -9c hostapd.8 > $startdir/pkg/usr/man/man8/hostapd.8.gz
 	gzip -9c hostapd_cli.1 > $startdir/pkg/usr/man/man1/hostapd_cli.1.gz
 	cp hostapd hostapd_cli $startdir/pkg/usr/sbin/
-	mkdir -p $startdir/pkg/install
-	cat $startdir/src/doinst.sh $DOINST_TMP > $startdir/pkg/install/doinst.sh
 }
