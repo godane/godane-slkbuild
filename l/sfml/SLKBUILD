@@ -1,0 +1,33 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=sfml
+pkgver=2.3.2
+pkgrel=1go
+source=("https://github.com/SFML/SFML/archive/$pkgver.tar.gz")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://www.sfml-dev.org/"
+
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"sfml (Simple and Fast Multimedia Library)"
+""
+"Homepage: http://www.sfml-dev.org/"
+)
+
+build() {
+	cd $startdir/src/SFML-$pkgver
+	mkdir build && cd build
+	cmake .. \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DSFML_BUILD_EXAMPLES=1 \
+		-DSFML_BUILD_DOC=1 \
+		-DSFML_INSTALL_PKGCONFIG_FILES=1
+	make
+	make doc
+	make install DESTDIR=$startdir/pkg
+	install -Dm644 "$startdir/pkg/usr/share/SFML/cmake/Modules/FindSFML.cmake" "$startdir/pkg/usr/share/cmake-3.6/Modules/FindSFML.cmake"
+
+}
