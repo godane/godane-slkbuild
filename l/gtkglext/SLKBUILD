@@ -1,0 +1,43 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=gtkglext
+pkgver=1.2.0
+pkgrel=1go
+source=("http://downloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.bz2"
+	"gtkglext-no-deprecated-flags.patch")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="http://projects.gnome.org/gtkglext/"
+
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"GtkGLExt (an OpenGL extension to GTK)"
+""
+"This package is composed of GdkGLExt library and GtkGLExt library."
+"GdkGLExt library provides the GDK objects which support OpenGL"
+"rendering in GTK. GtkGLExt library provides the GtkWidget API"
+"add-ons to make GTK+ widgets OpenGL-capable."
+""
+"http://projects.gnome.org/gtkglext/"
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	# Don't disable deprecated stuff
+	patch -p1 < $startdir/src/gtkglext-no-deprecated-flags.patch
+
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--disable-static \
+		--enable-gtk-doc \
+		--enable-debug=no \
+		--build=$arch-slackware-linux
+	make
+	make install DESTDIR=$startdir/pkg
+
+}
