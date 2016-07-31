@@ -1,0 +1,59 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=vbam
+pkgver=beta2
+pkgrel=1go
+source=("https://github.com/visualboyadvance-m/visualboyadvance-m/archive/VBA-M_Beta_2.tar.gz"
+	"cxx11-fixes.patch")
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://vba-m.com/"
+
+
+doinst() {
+if [ -x /usr/bin/update-desktop-database ]; then
+  /usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+  if [ -x /usr/bin/gtk-update-icon-cache ]; then
+    /usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+  fi
+fi
+}
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"vbam (cross-platform GameBoy emulator)"
+""
+"vbam is a project dedicated to gathering community patches to the"
+"VisualBoyAdvance GameBoy emulator into one easily accessible project."
+""
+"Homepage: http://vba-m.com"
+)
+
+build() {
+	cd $startdir/src/visualboyadvance-m-VBA-M_Beta_2
+	# Set to ON to enable FFMPEG A/V recording.
+	FFMPEG=${FFMPEG:-OFF}
+	if [ "$arch" == "i586" ]; then
+		ASM=TRUE
+	else
+		ASM=FLASE
+	fi
+	patch -Np1 -i $startdir/src/cxx11-fixes.patch
+	mkdir -p build
+	cd build
+	CXXFLAGS+=' -std=c++11  -fpermissive'
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DENABLE_ASM_CORE=${ASM} \
+		-DENABLE_ASM_SCALERS=${ASM} \
+		-DENABLE_FFMPEG=${FFMPEG} \
+		-DENABLE_DEBUGGER=TRUE \
+		-DENABLE_SDL=TRUE \
+		-DENABLE_GTK=TRUE \
+		-DCMAKE_BUILD_TYPE=Release ..
+	make
+	make install DESTDIR=$startdir/pkg
+}
