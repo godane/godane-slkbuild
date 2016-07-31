@@ -1,0 +1,41 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=gtkglextmm
+pkgver=1.2.0
+pkgrel=1go
+source=("http://downloads.sourceforge.net/gtkglext/$pkgname/$pkgname-$pkgver.tar.gz"
+	"fix_ftbfs_gtk_2_36"
+	"patch-gtkglext_gtkmm_gl-widget.cc.diff")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="http://projects.gnome.org/gtkglext/"
+
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"gtkglextmm (C++ wrapper for GtkGLExt)"
+""
+"gtkglextmm is a C++ wrapper for GtkGLExt, an OpenGL Extension to GTK."
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	# Patch taken from here:
+	# https://trac.macports.org/attachment/ticket/27059/patch-gtkglext_gtkmm_gl-widget.cc.diff
+	patch -p0 < $startdir/src/patch-gtkglext_gtkmm_gl-widget.cc.diff
+	# Patch from Debian Unstable
+	patch -p1 < $startdir/src/fix_ftbfs_gtk_2_36
+	CXXFLAGS+=' -std=c++11'
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--mandir=/usr/man \
+		--build=$arch-slackware-linux
+	make TARGET_DIR=/usr/doc/$pkgname-$pkgver
+	make install TARGET_DIR=/usr/doc/$pkgname-$pkgver DESTDIR=$startdir/pkg
+
+}
