@@ -1,0 +1,40 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=pangox-compat
+pkgver=0.0.2
+pkgrel=1go
+source=("http://ftp.gnome.org/pub/gnome/sources/$pkgname/${pkgver:0:3}/$pkgname-$pkgver.tar.xz")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="http://www.pango.org"
+
+
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+"pangox-compat (X font support for Pango)"
+""
+"X Window System font support for Pango."
+""
+"http://www.pango.org"
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+
+	./configure \
+		--prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--sysconfdir=/etc \
+		--mandir=/usr/man \
+		--disable-static \
+		--docdir=/usr/doc/$pkgname-$pkgver \
+		--build=$arch-slackware-linux \
+		--host=$arch-slackware-linux \
+		--target=$arch-slackware-linux
+	make
+	make install DESTDIR=$startdir/pkg
+
+}
