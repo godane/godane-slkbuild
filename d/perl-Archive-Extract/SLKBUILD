@@ -1,0 +1,45 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+# _cpanname is the module name as provided in CPAN.
+# For example: Archive-Zip
+# The corresponding package will be named: perl-Archive-Zip
+_cpanname=Archive-Extract
+pkgname=perl-${_cpanname}
+pkgver=0.78
+pkgrel=1go
+source=("http://www.cpan.org/authors/id/B/BI/BINGOS/${_cpanname}-$pkgver.tar.gz")
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url="https://metacpan.org/release/Archive-Extract"
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"perl-Archive-Extract (Generic archive extracting mechanism)"
+""
+"Archive::Extract allows you to extract any archive file of the"
+"type .tar, .tar.gz, .gz, .Z, tar.bz2, .tbz, .bz2, .zip, .xz, .txz,"
+".tar.xz or .lzma without having to worry how it does so, or use"
+"different interfaces for each type by using either Perl modules, or"
+"command-line tools on your system."
+""
+"For more info, visit: https://metacpan.org/release/Archive-Extract"
+)
+
+
+build() {
+	cd $startdir/src/${_cpanname}-$pkgver
+
+	perl Makefile.PL || exit 1
+	make OPTIMIZE="$CFLAGS" || exit 1
+	make install INSTALLDIRS=vendor DESTDIR=$startdir/pkg || exit 1
+
+	# Remove perllocal.pod and .packlist if present in the package
+	( for i in perllocal.pod .packlist; do
+	        find $startdir/pkg -name "$i" -exec rm -rf {} \;
+		  done
+	) || exit 1
+} 
