@@ -1,0 +1,43 @@
+#Packager: Richard Lapointe <richard@laprjns.com>
+#Former Packager(s): Name <email@address.com>
+#Anything commented out is optional and can be deleted.
+
+pkgname=gumbo-parser
+pkgver=0.10.1
+pkgrel=1go
+source=(https://github.com/google/gumbo-parser/archive/v0.10.1.zip)
+docs=("readme" "install" "copying" "changelog" "authors" "news" "todo")
+url=https://github.com/google/gumbo-parser
+#dotnew=()lua
+#CFLAGS=
+#CXXFLAGS=
+#options=('noextract')
+
+#doinst() {
+#
+#}
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"Gumbo-parser (A pure-C HTML5 parser)"
+"Gumbo is an implementation of the HTML5 parsing algorithm implemented "
+"as a pure C99 library with no outside dependencies. It's designed to "
+"serve as a building block for other tools and libraries such as "
+"linters, validators, templating languages, and refactoring and "
+"analysis tools."
+)
+
+
+build() {
+	cd $startdir/src/$pkgname-$pkgver
+	./autogen.sh
+	./configure --prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--disable-static \
+		--build=$arch-slackware-linux
+	make || return 1
+	make install DESTDIR=$startdir/pkg
+} 
