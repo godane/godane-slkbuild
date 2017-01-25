@@ -1,7 +1,7 @@
 #Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
 
 pkgname=zimlib
-pkgver=1.2
+pkgver=1.4
 pkgrel=1go
 source=("http://www.openzim.org/download/$pkgname-$pkgver.tar.gz")
 docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
