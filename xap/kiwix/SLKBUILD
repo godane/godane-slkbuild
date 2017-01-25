@@ -1,14 +1,16 @@
 #Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
 
 pkgname=kiwix
-pkgver=20160531
+pkgver=20170125
 pkgrel=1go
-source=($pkgname-$pkgver.src.tar.gz)
+source=($pkgname-$pkgver.src.tar.gz size_t.patch)
 docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
 url="http://www.kiwix.org"
 options=('nosrcpack')
 # on normal slackware the depends that need to be build are:
 # ctpp2, libmirohttpd, pugixml, and zimlib
+#CFLAGS=
+#CXXFLAGS=
 
 slackdesc=\
 (
@@ -23,8 +25,10 @@ slackdesc=\
 
 build() {
 	cd $startdir/src/$pkgname
+	patch -p0 < $startdir/src/size_t.patch
 	./autogen.sh
 	sed -i "s|-I/usr/lib|-I/usr/lib${LIBDIRSUFFIX}|" configure
+	export HAVE_UPX=no
 	./configure --prefix=/usr \
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--localstatedir=/var \
