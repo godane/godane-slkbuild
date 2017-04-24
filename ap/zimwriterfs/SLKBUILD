@@ -1,0 +1,38 @@
+#Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
+
+pkgname=zimwriterfs
+pkgver=20170424
+pkgrel=1go
+source=($pkgname-$pkgver.src.tar.gz)
+options=('nosrcpack')
+docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
+url="http://www.openzim.org/wiki/OpenZIM"
+# needs gumbo-parser
+
+slackdesc=\
+(
+ #|-----handy-ruler------------------------------------------------------|
+ "zimwritefs (Make zim files from filesystem folders)"
+ "zimwriterfs is a console tool to create ZIM files from a "
+ "locally-stored directory containing "self-sufficient" HTML content "
+ "(with pictures, javascript, and stylesheets). The result will contain "
+ "all the files of the local directory compressed and merged in the ZIM "
+ "file. Nothing more, nothing less. The generated file can be opened "
+ "with a ZIM reader; Kiwix is one example, but there are others."
+ ""
+ "Homepage: http://www.openzim.org/wiki/OpenZIM"
+
+)
+
+
+build() {
+	cd $startdir/src/$pkgname
+	./autogen.sh
+	./configure --prefix=/usr \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--localstatedir=/var \
+		--sysconfdir=/etc \
+		--build=$arch-slackware-linux
+	make -j $numjobs || return 1
+	make install DESTDIR=$startdir/pkg
+}
