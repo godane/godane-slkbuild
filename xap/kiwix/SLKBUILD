@@ -1,9 +1,9 @@
 #Maintaniner: Chris Rogers <slaxemulator~at~gmail~dot~com>
 
 pkgname=kiwix
-pkgver=20170125
+pkgver=20170531
 pkgrel=1go
-source=($pkgname-$pkgver.src.tar.gz size_t.patch)
+source=($pkgname-$pkgver.src.tar.gz)
 docs=("README" "INSTALL" "COPYING" "ChangeLog" "AUTHORS" "NEWS")
 url="http://www.kiwix.org"
 options=('nosrcpack')
@@ -25,7 +25,6 @@ slackdesc=\
 
 build() {
 	cd $startdir/src/$pkgname
-	patch -p0 < $startdir/src/size_t.patch
 	./autogen.sh
 	sed -i "s|-I/usr/lib|-I/usr/lib${LIBDIRSUFFIX}|" configure
 	export HAVE_UPX=no
